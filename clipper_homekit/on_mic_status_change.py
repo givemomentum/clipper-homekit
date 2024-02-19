@@ -22,7 +22,7 @@ async def _is_mic_on() -> bool:
     try:
         pyautogui.locateOnScreen(
             _get_file_path("mic-on-passively.png"),
-            confidence=0.98,
+            confidence=0.91,
         )
         is_mic_on_passively = True
     except pyautogui.ImageNotFoundException:
@@ -31,7 +31,7 @@ async def _is_mic_on() -> bool:
     try:
         pyautogui.locateOnScreen(
             _get_file_path("mic-on-actively.png"),
-            confidence=0.98,
+            confidence=0.91,
         )
         is_mic_on_actively = True
     except pyautogui.ImageNotFoundException:

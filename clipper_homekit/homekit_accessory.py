@@ -20,6 +20,5 @@ class MicSwitchAccessory(Accessory):
         self.char_on = service_switch.configure_char("On", setter_callback=self.set_on)
 
     def set_on(self, value: bool):
-        logger.info(
-            "Turning the Discord Mic on" if value else "Turning the Discord Mic off"
-        )
+        self.char_on.set_value(value)
+        logger.info(f"Discord Mic: {'[on]' if value else '[off]'}")
