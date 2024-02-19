@@ -17,6 +17,7 @@
         mss = "^9.0.1"
         numpy = "^1.26.4"
         aiohttp = "^3.9.3"
+pynput = "^1.7.6"
 
 [build-system]
     requires = ["poetry-core"]

@@ -13,12 +13,11 @@ logger = logging.getLogger(__name__)
 
 async def on_mic_status_change(callback: Callable[[bool], None]):
     while True:
-        is_mic_on = await _is_mic_on()
-        callback(is_mic_on)
-        await asyncio.sleep(3)
+        callback(await is_mic_on())
+        await asyncio.sleep(2)
 
 
-async def _is_mic_on() -> bool:
+async def is_mic_on() -> bool:
     try:
         pyautogui.locateOnScreen(
             _get_file_path("mic-on-passively.png"),

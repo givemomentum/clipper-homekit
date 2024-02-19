@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 import asyncio
 import logging
@@ -15,7 +17,7 @@ logging.getLogger("PIL.PngImagePlugin").setLevel(logging.WARNING)
 
 async def start_server(is_monitor_mic: bool = True) -> None:
     loop = asyncio.get_running_loop()
-    driver = AccessoryDriver(loop=loop)
+    driver = AccessoryDriver(loop=loop, port=51826)
     loop.add_signal_handler(signal.SIGTERM, lambda: asyncio.create_task(driver.stop()))
 
     mic_accessory = MicSwitchAccessory(driver=driver, display_name="Discord Mic Switch")
@@ -24,7 +26,12 @@ async def start_server(is_monitor_mic: bool = True) -> None:
     tasks = []
     if is_monitor_mic:
         mic_monitor_task = asyncio.create_task(
-            on_mic_status_change(lambda is_mic_on: mic_accessory.set_on(is_mic_on))
+            on_mic_status_change(
+                lambda is_mic_on: mic_accessory.set_on(
+                    value=is_mic_on,
+                    is_enforce_mic_status=False,
+                )
+            )
         )
         tasks.append(mic_monitor_task)
 
@@ -61,3 +68,7 @@ def main():
         logging.getLogger().setLevel(logging.DEBUG)
 
     asyncio.run(start_server(is_monitor_mic=args.is_monitor_mic))
+
+
+if __name__ == "__main__":
+    main()
