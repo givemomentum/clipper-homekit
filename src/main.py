@@ -1,30 +1,41 @@
-from pyhap.accessory import Accessory
+import logging
+import signal
+
 from pyhap.accessory_driver import AccessoryDriver
-from pyhap.const import CATEGORY_SWITCH
-from pyhap.loader import Loader
+import asyncio
+
+from src.homekit_accessory import MicSwitchAccessory
+from src.on_mic_status_change import on_mic_status_change
 
 
-class MicSwitchAccessory(Accessory):
-    category = CATEGORY_SWITCH
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        loader = Loader()
-        service_switch = loader.get_service("Switch")
-        self.add_service(service_switch)
-        self.char_on = service_switch.configure_char("On", setter_callback=self.set_on)
-
-    def set_on(self, value):
-        # Implement the logic to turn your socket on or off
-        print("Turning the Discord Mic on" if value else "Turning the Discord Mic off")
+logging.basicConfig(level=logging.INFO)
 
 
-def init():
+async def main() -> None:
     driver = AccessoryDriver(port=51826)
-    mic_accessory = MicSwitchAccessory(driver=driver, display_name="Mic Switch")
+    signal.signal(signal.SIGTERM, driver.signal_handler)
+
+    mic_accessory = MicSwitchAccessory(driver=driver, display_name="Discord Mic")
     driver.add_accessory(accessory=mic_accessory)
-    driver.start()
+
+    mic_monitor_task = asyncio.create_task(
+        on_mic_status_change(lambda is_mic_on: mic_accessory.set_on(is_mic_on))
+    )
+
+    try:
+        await driver.async_start()
+        logging.info("Driver started")
+        while True:
+            await asyncio.sleep(10)
+    except KeyboardInterrupt:
+        logging.info("Keyboard interrupt received")
+        mic_monitor_task.cancel()
+        await mic_monitor_task
+    except Exception as e:
+        logging.error(f"Exception occurred: {e}")
+    finally:
+        logging.info("Main coroutine exiting")
 
 
 if __name__ == "__main__":
-    init()
+    asyncio.run(main())
