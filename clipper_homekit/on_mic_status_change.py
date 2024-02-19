@@ -5,7 +5,7 @@ from typing import Callable
 
 import pyautogui
 
-from src.settings import BASE_DIR
+from clipper_homekit.settings import BASE_DIR
 
 
 logger = logging.getLogger(__name__)

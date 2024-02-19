@@ -4,6 +4,10 @@
     description = ""
     authors = ["Victor Yunenko <victor@eawork.org>"]
 
+[tool.poetry.scripts]
+    clipper_homekit_server = "clipper_homekit.start_server:main"
+
+
 [tool.poetry.dependencies]
     python = "^3.10"
     hap-python = {extras = ["qrcode"], version = "^4.9.1"}
