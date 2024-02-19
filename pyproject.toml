@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "clipper-homekit"
+version = "0.1.0"
+description = ""
+authors = ["Victor Yunenko <36416236+victor-yunenko@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+hap-python = {extras = ["qrcode"], version = "^4.9.1"}
+ruff = "^0.2.2"
+opencv-python-headless = "^4.9.0.80"
+pyautogui = "^0.9.54"
+mss = "^9.0.1"
+numpy = "^1.26.4"
+aiohttp = "^3.9.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
